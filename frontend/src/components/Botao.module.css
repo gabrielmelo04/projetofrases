@@ -1,0 +1,17 @@
+.btn{
+    width: 150px;
+    height: 8vh;
+    font-size: 1.2em;
+    letter-spacing: 0.1em;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 1px 1px 4px #ddd;
+    text-align: center;
+    align-items: center;
+}
+
+.btn:hover{
+    opacity: 0.8;
+}

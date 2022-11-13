@@ -1,0 +1,67 @@
+.container{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.areaTabela{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.tabela{
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.tabela th{
+    height: 50px;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: .2em;
+}
+
+.tabela td{
+    height: 50px;
+    vertical-align: middle;
+    align-items: center;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.tabela tbody tr:hover{
+    background-color: #9e6aff;
+    color: #fff;
+}
+
+.tabela tbody tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+
+.tabela tbody tr:nth-child(even):hover{
+    background-color: #9e6aff;
+    color: #fff;
+}
+
+.tabela th{
+    background-color: #04c00e;
+    color: #fff;
+}
+
+.acoes{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1.2em;
+}
+
+

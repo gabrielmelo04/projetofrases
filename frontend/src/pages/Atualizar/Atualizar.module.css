@@ -1,0 +1,74 @@
+.container{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5em;
+}
+
+.formulario{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.inputCadastrar{
+    width: 100%;
+    height: 3em;
+    margin-bottom: 2em;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputCadastrar input{
+    width: 100%;
+    height: 3em;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding-left: 1em;
+    outline: none;
+}
+
+.inputCadastrar span{
+    width: fit-content;
+    margin-top: -3.6em;
+    background-color: #fff;
+    margin-left: 0.5em;
+}
+
+.inputCadastrar input:focus, .inputCadastrar input:valid{
+    border-color: #7448c7;
+}
+
+.inputCadastrar input:focus + span, .inputCadastrar input:valid + span{
+    color: #7448c7;
+}
+
+.inputCadastrar input:not([value=null]):not(:focus):invalid + span{
+    color: red;
+}
+
+.formulario input[type = "submit"]{
+    width: 40%;
+    height: 8vh;
+    border-radius: 10px;
+    border: none;
+    background-color: #7448c7;
+    color: #fff;
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+}
+
+.formulario input[type = "submit"]:hover{
+    opacity: 0.8;
+}
+
+h1{
+    color: #7448c7
+}

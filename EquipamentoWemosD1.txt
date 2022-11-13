@@ -1,0 +1,163 @@
+#include <LiquidCrystal_I2C.h>
+#include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClient.h>
+
+LiquidCrystal_I2C lcd(0x3F, 20, 4);
+
+const char* ssid = "seu_wifi";
+const char* password = "sua_senha_do_wifi";
+String payload;
+
+#define interruptor D6
+#define prox D5
+#define ant D7
+
+String texto[5];
+int ind = 0;
+
+String urlFrase = "http://seu_ip:3600/api/frases/listar";
+
+boolean statusBtn = false;
+int pos = 0;
+
+unsigned long MilliAnterior = 0;
+
+WiFiClient wifiClient;
+HTTPClient http;
+
+void setup() {
+  Serial.begin(115200);
+  conectarInternet();
+
+  pinMode(interruptor, INPUT_PULLUP);
+  pinMode(prox, INPUT_PULLUP);
+  pinMode(ant, INPUT_PULLUP);
+
+  lcd.begin(20,4);
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(4, 1);
+  lcd.print("Bem-Vindo(a)");
+  lcd.setCursor(3, 2);
+  lcd.print("Projeto Frases!");
+
+  while (texto[0] == ""){
+    if(millis() - MilliAnterior >= 2000){
+      MilliAnterior = millis();
+      getFrases();
+    }
+  }
+}
+
+void loop() {
+
+  
+  if(digitalRead(interruptor) == LOW && texto[0] != ""){
+    if(statusBtn == true){
+      lcd.clear();
+      lcd.display();
+      lcd.setCursor(((20 - texto[pos].length())/2),1);
+      lcd.print(texto[pos]);
+      statusBtn = false;
+      delay(1000);
+    }else if(statusBtn == false){
+      lcd.noDisplay();
+      getFrases();
+      lcd.clear();
+      statusBtn = true;
+      delay(1000);
+    }
+  }
+
+  if(digitalRead(prox) == LOW && texto[0] != ""){
+    proximo();
+  }
+
+  if(digitalRead(ant) == LOW && texto[0] != ""){
+    anterior();
+  }
+  
+}
+
+void conectarInternet(){
+  WiFi.begin(ssid, password);
+  Serial.println("Conectando na rede");
+  Serial.print(ssid);
+
+  while(WiFi.status() != WL_CONNECTED){
+    Serial.print(".");
+    delay(5000);
+  }
+
+  Serial.println("WiFi Conectado!");
+  Serial.println("Endereço IP:");
+  Serial.println(WiFi.localIP());
+  delay(1000);
+}
+
+void getFrases(){
+  if(WiFi.status() == WL_CONNECTED){
+
+    ind = 0;
+    http.begin(wifiClient, urlFrase);
+    delay(500);
+
+    int httpCode = http.GET();
+    delay(500);
+
+    Serial.print(httpCode);
+
+    if(httpCode > 0){
+      Serial.printf("[HTTP]GET... code %d\n", httpCode);
+      Serial.println(http.getString());
+      payload = http.getString();
+      Serial.println(payload);
+      delay(500);
+      http.end();
+
+      StaticJsonDocument<1536> doc;
+
+      DeserializationError error = deserializeJson(doc, payload);
+    
+      if (error) {
+        Serial.print("deserializeJson() failed: ");
+        Serial.println(error.c_str());
+        return;
+      }
+    
+      for (JsonObject data_item : doc["data"].as<JsonArray>()) {
+        
+        const char* data_item_frase = data_item["frase"];
+        delay(500);
+        texto[ind] = data_item_frase;
+        ind++;
+      }
+    }
+ }
+}
+
+void proximo(){
+  if(pos < (ind - 1) ){
+    pos = pos + 1;
+    Serial.println(pos);
+    lcd.clear();
+    lcd.setCursor(((20 - texto[pos].length())/2),1);
+    lcd.leftToRight();
+    lcd.print(texto[pos]);
+    delay(1000);
+  }
+}
+
+void anterior(){
+  if(pos > 0){
+    pos = pos - 1; 
+    Serial.println(pos);
+    lcd.clear();
+    lcd.setCursor(((20 - texto[pos].length())/2),1);
+    lcd.leftToRight();
+    lcd.print(texto[pos]);
+    delay(1000);
+  }
+}
